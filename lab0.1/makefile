@@ -1,2 +1,2 @@
 compile: main.c
-	gcc ./main.c -o main
+	clang -D_DEFAULT_SOURCE ./main.c -o main

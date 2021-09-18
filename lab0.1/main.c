@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <string.h>
+#include <getopt.h>
+#include <sys/stat.h>
+#include <unistd.h>
+extern char *optarg;
+extern int optind, opterr, optopt;
+#define _GNU_SOURCE
+
+const size_t path_max_size = 256;
+
 int listdir(const char *path)
 {
     struct dirent *entry;
@@ -26,16 +35,35 @@ int listdir(const char *path)
 
 int main(int argc, char **argv)
 {
-    int counter = 1;
-
-    if (argc == 1)
-        listdir(".");
-
-    while (++counter <= argc)
+    int c = 0;
+    while ((c = getopt(argc, argv, "ab:c")) != -1)
     {
-        // printf("\nListing %s...\n", argv[counter - 1]);
-        listdir(argv[counter - 1]);
+        switch (c)
+        {
+        case 'a':
+            printf("%s\n", "a-option entered");
+        case 'b':
+            if (optarg)
+            {
+                printf("%s\n", optarg);
+            }
+            else
+            {
+                printf("%s\n", "b-option entered");
+            }
+        }
     }
+    // int counter = 1;
+
+    // if (argc == 1)
+    //     listdir(".");
+    // else if (argc > 1)
+    // {
+    // }
+    // while (++counter <= argc)
+    // {
+    //     listdir(argv[counter - 1]);
+    // }
 
     return 0;
 }

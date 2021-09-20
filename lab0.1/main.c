@@ -195,6 +195,7 @@ int listdir(const char *path, bool long_listing)
             else
             {
                 char *tmp = malloc(2);
+                memset(tmp, 0, sizeof(tmp));
                 tmp[0] = '/';
                 char *fileName = concat(path, tmp);
                 free(tmp);
@@ -230,12 +231,14 @@ int main(int argc, char **argv)
     //     }
     // }
     // int counter = 1;
-
-    if (argc == 1)
-    {
-        getBlocksCount(".");
-        listdir(".", true);
-    }
+    getBlocksCount(argv[2]);
+    printf("%s\n", argv[2]);
+    listdir(argv[2], true);
+//    if (argc == 1)
+//    {
+//        getBlocksCount(".");
+//        listdir(".", true);
+//    }
     // // else if (argc > 1)
     // {
     // }

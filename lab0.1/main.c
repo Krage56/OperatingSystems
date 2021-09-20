@@ -154,7 +154,8 @@ void getBlocksCount(const char *path)
         if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
         {
             char *tmp = malloc(2);
-            tmp[0] = '/';
+            memset(tmp, 0, sizeof(*tmp));
+            strcpy(tmp, "/");
             char *fileName = concat(path, tmp);
             free(tmp);
             tmp = fileName;
@@ -195,8 +196,8 @@ int listdir(const char *path, bool long_listing)
             else
             {
                 char *tmp = malloc(2);
-                memset(tmp, 0, sizeof(tmp));
-                tmp[0] = '/';
+                memset(tmp, 0, sizeof(*tmp));
+                strcpy(tmp, "/");
                 char *fileName = concat(path, tmp);
                 free(tmp);
                 tmp = fileName;
@@ -212,122 +213,36 @@ int listdir(const char *path, bool long_listing)
 
 int main(int argc, char **argv)
 {
-    // int c = 0;
-    // while ((c = getopt(argc, argv, "ab:c")) != -1)
-    // {
-    //     switch (c)
-    //     {
-    //     case 'a':
-    //         printf("%s\n", "a-option entered");
-    //     case 'b':
-    //         if (optarg)
-    //         {
-    //             printf("%s\n", optarg);
-    //         }
-    //         else
-    //         {
-    //             printf("%s\n", "b-option entered");
-    //         }
-    //     }
-    // }
-    // int counter = 1;
-    getBlocksCount(argv[2]);
-    printf("%s\n", argv[2]);
-    listdir(argv[2], true);
-//    if (argc == 1)
-//    {
-//        getBlocksCount(".");
-//        listdir(".", true);
-//    }
-    // // else if (argc > 1)
-    // {
-    // }
-    // while (++counter <= argc)
-    // {
-    //     listdir(argv[counter - 1]);
-    // }
-
+    int c = 0;
+    bool l = false;
+    while ((c = getopt(argc, argv, "l")) != -1)
+    {
+        switch (c)
+        {
+        case 'l':
+            l = true;
+        }
+    }
+    if (argc == 1)
+    {
+        listdir(".", l);
+    }
+    if (argc == 2)
+    {
+        if (l)
+        {
+            getBlocksCount(".");
+            listdir(".", l);
+        }
+        else
+        {
+            listdir(argv[1], l);
+        }
+    }
+    if (argc == 3)
+    {
+        getBlocksCount(argv[2]);
+        listdir(argv[2], l);
+    }
     return 0;
 }
-
-/*#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdint.h>
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/sysmacros.h>
-
-int main(int argc, char *argv[])
-{
-    struct stat sb;
-
-    if (argc != 2)
-    {
-        fprintf(stderr, "Usage: %s <pathname>\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    if (lstat(argv[1], &sb) == -1)
-    {
-        perror("lstat");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("ID of containing device:  [%jx,%jx]\n",
-           (uintmax_t)major(sb.st_dev),
-           (uintmax_t)minor(sb.st_dev));
-
-    printf("File type:                ");
-
-    switch (sb.st_mode & S_IFMT)
-    {
-    case S_IFBLK:
-        printf("block device\n");
-        break;
-    case S_IFCHR:
-        printf("character device\n");
-        break;
-    case S_IFDIR:
-        printf("directory\n");
-        break;
-    case S_IFIFO:
-        printf("FIFO/pipe\n");
-        break;
-    case S_IFLNK:
-        printf("symlink\n");
-        break;
-    case S_IFREG:
-        printf("regular file\n");
-        break;
-    case S_IFSOCK:
-        printf("socket\n");
-        break;
-    default:
-        printf("unknown?\n");
-        break;
-    }
-
-    // printf("I-node number:            %ju\n", (uintmax_t)sb.st_ino);
-
-    // printf("Mode:                     %jo (octal)\n",
-    //        (uintmax_t)sb.st_mode);
-
-    // printf("Link count:               %ju\n", (uintmax_t)sb.st_nlink);
-    // printf("Ownership:                UID=%ju   GID=%ju\n",
-    //        (uintmax_t)sb.st_uid, (uintmax_t)sb.st_gid);
-
-    // printf("Preferred I/O block size: %jd bytes\n",
-    //        (intmax_t)sb.st_blksize);
-    // printf("File size:                %jd bytes\n",
-    //        (intmax_t)sb.st_size);
-    // printf("Blocks allocated:         %jd\n",
-    //        (intmax_t)sb.st_blocks);
-
-    // printf("Last status change:       %s", ctime(&sb.st_ctime));
-    // printf("Last file access:         %s", ctime(&sb.st_atime));
-    // printf("Last file modification:   %s", ctime(&sb.st_mtime));
-
-    exit(EXIT_SUCCESS);
-}
-*/

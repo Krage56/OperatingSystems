@@ -138,7 +138,22 @@ void printFileData(const char *path, const char *name)
         printf("%s", "-");
     }
     printf(" %ld ", sb.st_nlink);
-    printf("%s %s ", getpwuid(sb.st_uid)->pw_name, getpwuid(sb.st_gid)->pw_name);
+//    printf("%s %s ", getpwuid(sb.st_uid)->pw_name, getpwuid(sb.st_gid)->pw_name);
+    struct passwd *pwd;
+    pwd = getpwuid(sb.st_uid);
+    if(pwd == NULL){
+        perror("st_uid is NULL");
+    }
+    else{
+        printf("%s ", pwd->pw_name);
+    }
+    pwd = getpwuid(sb.st_gid);
+    if(pwd == NULL){
+        printf("%s ", "allusers");
+    }
+    else{
+        printf("%s ", pwd->pw_name);
+    }
     printf("%ld ", sb.st_size);
     getTime(sb.st_mtime);
     printf(" %s\n", name);

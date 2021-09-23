@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <grp.h>
 #include <time.h>
 extern char *optarg;
 extern int optind, opterr, optopt;
@@ -147,12 +148,12 @@ void printFileData(const char *path, const char *name)
     else{
         printf("%s ", pwd->pw_name);
     }
-    pwd = getpwuid(sb.st_gid);
-    if(pwd == NULL){
-        printf("%s ", "allusers");
+    struct group *gr = getgrgid(sb.st_gid);
+    if(gr == NULL){
+        perror("st_guid is NULL");
     }
     else{
-        printf("%s ", pwd->pw_name);
+        printf("%s ", gr->gr_name);
     }
     printf("%ld ", sb.st_size);
     getTime(sb.st_mtime);

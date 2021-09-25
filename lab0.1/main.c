@@ -46,19 +46,19 @@ void printFileData(const char *path, const char *name)
     }
     switch (sb.st_mode & S_IFMT)
     {
-    case S_IFDIR:
-        printf("d");
-        break;
-    case S_IFLNK:
-        printf("l");
-        break;
-    case S_IFREG:
-        printf("-");
-        break;
-    default:
-        perror("unknown type of file");
-        exit(EXIT_FAILURE);
-        break;
+        case S_IFDIR:
+            printf("d");
+            break;
+        case S_IFLNK:
+            printf("l");
+            break;
+        case S_IFREG:
+            printf("-");
+            break;
+        default:
+            perror("unknown type of file");
+            exit(EXIT_FAILURE);
+            break;
     }
     //rwx by owner
     mode_t tmp = sb.st_mode & S_IRWXU;
@@ -139,18 +139,17 @@ void printFileData(const char *path, const char *name)
         printf("%s", "-");
     }
     printf(" %ld ", sb.st_nlink);
-//    printf("%s %s ", getpwuid(sb.st_uid)->pw_name, getpwuid(sb.st_gid)->pw_name);
     struct passwd *pwd;
     pwd = getpwuid(sb.st_uid);
     if(pwd == NULL){
-        perror("st_uid is NULL");
+        printf("      ");
     }
     else{
         printf("%s ", pwd->pw_name);
     }
     struct group *gr = getgrgid(sb.st_gid);
     if(gr == NULL){
-        perror("st_guid is NULL");
+        printf("      ");
     }
     else{
         printf("%s ", gr->gr_name);
@@ -165,9 +164,11 @@ void getBlocksCount(const char *path)
     DIR *dp;
     blksize_t fullBlockSize = 0;
     dp = opendir(path);
+    char *tmpStr = ".";
     while ((entry = readdir(dp)))
     {
-        if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
+        if (entry->d_name[0] != tmpStr[0] &&
+            (strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
         {
             char *tmp = malloc(2);
             memset(tmp, 0, sizeof(*tmp));
@@ -193,17 +194,17 @@ int listdir(const char *path, bool long_listing)
 {
     struct dirent *entry;
     DIR *dp;
-    blksize_t fullBlockSize = 0;
     dp = opendir(path);
     if (dp == NULL)
     {
         perror("opendir");
         return -1;
     }
-
+    char *tmpStr = ".";
     while ((entry = readdir(dp)))
     {
-        if ((strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
+        if (entry->d_name[0] != tmpStr[0] &&
+        (strcmp(entry->d_name, ".") != 0) && (strcmp(entry->d_name, "..") != 0))
         {
             if (!long_listing)
             {
@@ -235,8 +236,8 @@ int main(int argc, char **argv)
     {
         switch (c)
         {
-        case 'l':
-            l = true;
+            case 'l':
+                l = true;
         }
     }
     if (argc == 1)

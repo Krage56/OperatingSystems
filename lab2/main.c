@@ -55,8 +55,9 @@ int main()
     else
     {
         close(pipes[1]);
-        char message[65];
+        char message[61];
         size_t r = read(pipes[0], &message, 61);
+        message[60] = '\0';
         printf("%s\n", message);
         time(NULL);
         currentTime = get_time(time(NULL));
@@ -85,8 +86,9 @@ int main()
     else
     {
         fd = open("fifo", O_RDONLY);
-        char message[65];
+        char message[61];
         size_t r = read(fd, &message, 61);
+        message[60] = '\0';
         printf("%s\n", message);
         time(NULL);
         currentTime = get_time(time(NULL));

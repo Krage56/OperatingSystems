@@ -117,7 +117,7 @@ void set_mod(const char *path, unsigned int seq)
     }
     else if (change == 2)
     {
-        int r = chmod(path, sb.st_mode ^ mode);
+        int r = chmod(path, sb.st_mode ^ (sb.st_mode & mode));
         if (r < 0)
         {
             perror("Can't change rights for the file");

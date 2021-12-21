@@ -34,9 +34,9 @@ void *writer_handler(void *args)
     while (count < 77)
     {
         pthread_mutex_lock(&mutex);
-        ++count;
+        count += 1;
         pthread_mutex_unlock(&mutex);
-        sleep(1);
+        sleep(3);
     }
     return NULL;
 }
@@ -47,6 +47,8 @@ int main()
     pthread_t readers[readres_num], writers[writers_num];
     void *(*reader)(void *) = reader_handler;
     void *(*writer)(void *) = writer_handler;
+    pthread_mutex_init(&mutex, NULL);
+
     for (int i = 0; i < readres_num; ++i)
     {
         pthread_create(&(readers[i]), NULL, reader, NULL);
@@ -63,8 +65,6 @@ int main()
     {
         pthread_join(readers[i], NULL);
     }
-
-    pthread_mutex_init(&mutex, NULL);
 
     pthread_mutex_destroy(&mutex);
     return 0;

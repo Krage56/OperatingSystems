@@ -51,7 +51,7 @@ void write_message(int shmid)
     char *shared_data;
     void *shared_mem_obj;
     shared_data = get_inform_string();
-    shared_mem_obj = shmat(shmid, 0, O_RDWR);
+    shared_mem_obj = shmat(shmid, 0, S_IRWXU);
     memcpy(shared_mem_obj, shared_data, MESSAGE_SIZE + 1);
     while (true)
     {
@@ -64,7 +64,7 @@ void write_message(int shmid)
 
 int main()
 {
-    int f = open(mem_name, O_CREAT | O_RDWR | O_EXCL);
+    int f = open(mem_name, O_CREAT | S_IRWXU | O_EXCL);
     //Проверка на существование файла mem_name
     if (f != -1)
     {

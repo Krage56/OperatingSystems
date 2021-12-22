@@ -24,12 +24,12 @@ reader_handler(void *args)
     {
         pthread_rwlock_rdlock(&rwlock);
         printf("My TID is %lu, count = %llu\n", (pthread_self()), count);
-        if (count >= 100)
+        if (count >= 5)
         {
             break;
         }
         pthread_rwlock_unlock(&rwlock);
-        usleep(5);
+        sleep(2);
     }
     return NULL;
 }
@@ -37,11 +37,11 @@ reader_handler(void *args)
 void *writer_handler(void *args)
 {
 
-    while (count < 100)
+    while (count < 5)
     {
         pthread_rwlock_wrlock(&rwlock);
         ++count;
-        usleep(100000);
+        sleep(5);
         pthread_rwlock_unlock(&rwlock);
     }
     return NULL;

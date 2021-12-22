@@ -20,7 +20,7 @@ unsigned long long count = 0;
 void *reader_handler(void *args)
 {
     pthread_mutex_lock(&mutex);
-    if (count < 100)
+    if (count < 10)
     {
         pthread_cond_wait(&cond, &mutex);
     }
@@ -34,7 +34,7 @@ void *reader_handler(void *args)
 void *writer_handler(void *args)
 {
 
-    while (count < 100)
+    while (count < 10)
     {
         pthread_mutex_lock(&mutex);
         ++count;
